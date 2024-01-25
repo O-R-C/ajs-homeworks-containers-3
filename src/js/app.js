@@ -1,8 +1,10 @@
-import data from './data';
-import ErrorRepository from './ErrorRepository';
+import Settings from './Settings';
+import dataSettings from './dataSettings';
 
-const errorRepository = new ErrorRepository(data);
-console.log(errorRepository.translate(1));
-console.log(errorRepository.translate(4));
-console.log(errorRepository.translate(11));
+const settings = new Settings(dataSettings);
+
+settings.userSettings.set('theme', 'gray');
+settings.userSettings.set('theme1', 'gray');
+
+console.log(settings.settings);
 
