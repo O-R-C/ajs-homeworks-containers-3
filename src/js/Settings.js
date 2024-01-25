@@ -5,11 +5,44 @@
 export default class Settings {
   userSettings = new Map();
 
+  /**
+   * сохраняет массив настроек,
+   * устанавливает значения по умолчанию
+   * @param {Array} dataSettings массив настроек
+   */
   constructor(dataSettings) {
+    this.checkDataSettings(dataSettings);
+
     this.dataSettings = new Map(dataSettings);
     this.setDefaultSettings(dataSettings);
   }
 
+  /**
+   * проверяет массив настроек на соответствие структуры
+   * @param {Array} dataSettings массив настроек
+   * @throws {Error} если структура массива настроек не валидна
+   */
+  checkDataSettings(dataSettings) {
+    if (!Array.isArray(dataSettings)) {
+      throw new Error('настройки должны быть массивом');
+    }
+
+    if (!dataSettings.length) {
+      throw new Error('пустой массив настроек');
+    }
+
+    dataSettings.forEach((item) => {
+      const [, value] = item;
+      if (!Array.isArray(value)) {
+        throw new Error('значения должны быть массивом');
+      }
+    });
+  }
+
+  /**
+   * устанавливает значения по умолчанию
+   * @param {Array} dataSettings массив настроек
+   */
   setDefaultSettings(dataSettings) {
     const defaultSettings = dataSettings.map((setting) => {
       const [key, value] = setting;
@@ -20,14 +53,21 @@ export default class Settings {
     this.defaultSettings = new Map(defaultSettings);
   }
 
+  /**
+   * @returns {Map} результат слияния дефолтных и пользовательских настроек
+   */
   get settings() {
     let userSettings = this.getCorrectUserSettings();
 
     return new Map([...this.defaultSettings, ...userSettings]);
   }
 
+  /**
+   *
+   * @returns {Array} массив корректных настроек пользователя
+   */
   getCorrectUserSettings() {
-    if (!this.userSettings.size) return this.userSettings;
+    if (!this.userSettings.size) return [];
 
     let result = [...this.userSettings].reduce((acc, item) => {
       const [key, value] = item;
