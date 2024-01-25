@@ -32,9 +32,18 @@ export default class Settings {
     }
 
     dataSettings.forEach((item) => {
+      if (!Array.isArray(item)) {
+        throw new Error('элемент настройки должен быть массивом');
+      }
+
       const [, value] = item;
+
       if (!Array.isArray(value)) {
         throw new Error('значения должны быть массивом');
+      }
+
+      if (!value.length) {
+        throw new Error('пустой массив значений настроек');
       }
     });
   }
